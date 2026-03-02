@@ -1,0 +1,182 @@
+# Demo Web Shop – Playwright Java Automation Framework
+
+This project is a Playwright Java automation framework for the **Demo Web Shop** sample application (Tricentis).  
+It is designed to be **teachable**, **maintainable**, and **team-friendly**, with clear separation between tests, user flows, and page objects.
+
+---
+
+## 1. Architecture overview
+
+The framework follows a layered design:
+
+1. **Tests (TestNG)**
+   - High-level business scenarios.
+   - Call user flows, assert outcomes.
+   - Example: `EndToEndTests_UI.loginAddItemCheckout`.
+
+2. **User Flows (`UI_Userflows` package)**
+   - Orchestrate multi-page business flows.
+   - Express intent in domain language (e.g., “add book and checkout”).
+   - Example: `Checkout_UserFlow`.
+
+3. **Page Objects (`UIpgObj` package)**
+   - Encapsulate locators and UI interactions for a single page/section.
+   - Provide small, reusable methods (click, type, select, etc.).
+   - Examples:
+     - `NavigationBar_UIpgObj`
+     - `ProductListing_UIpgObj`
+     - `Cart_UIpgObj`
+     - `BillingAddress_UIpgObj`
+     - `ShippingAddress_UIpgObj`
+     - `Checkout_UIpgObj`
+
+4. **Models (`Models` package)**
+   - Plain data containers (POJOs) for domain objects.
+   - Example: `Address_POJO` for billing/shipping addresses.
+
+5. **Base classes & utilities**
+   - `BaseTest`: Playwright bootstrap (browser, context, page, tracing, video).
+   - `Base_UIPage`: shared UI helpers (click, type, selectOption, waits, retryClick).
+   - `ConfigManager`: config.properties loader (baseUrl, browser, headless, etc.).
+   - `AllureUtils`, `LogUtils`: reporting and logging.
+
+---
+
+## 2. Key packages
+
+- `com.demoWebShop.Base`
+  - `BaseTest`: TestNG base class, sets up Playwright, context, page, tracing, video.
+
+- `com.demoWebShop.UIpgObj`
+  - Page objects for each UI area.
+  - Example:
+    - `NavigationBar_UIpgObj`
+    - `ProductListing_UIpgObj`
+    - `Cart_UIpgObj`
+    - `BillingAddress_UIpgObj`
+    - `ShippingAddress_UIpgObj`
+    - `Checkout_UIpgObj`
+
+- `com.demoWebShop.UI_Userflows`
+  - Business-level flows that combine multiple page objects.
+  - Example:
+    - `Checkout_UserFlow` – add book to cart and complete checkout.
+
+- `com.demoWebShop.Models`
+  - Domain models (POJOs).
+  - Example:
+    - `Address_POJO` – reusable address data for billing/shipping.
+
+- `com.demoWebShop.Utilities`
+  - Cross-cutting utilities:
+    - `ConfigManager`
+    - `AllureUtils`
+    - `LogUtils`
+
+---
+
+## 3. Checkout flow design
+
+The checkout flow is implemented as:
+
+- **User Flow:** `Checkout_UserFlow`
+  - `addBookAndCheckout()`:
+    - Navigate to Books
+    - Add first product to cart
+    - Go to cart
+    - Proceed to checkout
+    - Call `checkout.completeCheckoutWithDefaults()`
+  - `isOrderCompleted()`:
+    - Delegates to `Checkout_UIpgObj.isOrderCompleted()`.
+
+- **Page Object:** `Checkout_UIpgObj`
+  - `completeCheckoutWithDefaults()`:
+    1. Billing Address
+       - `fillBillingAddressDefaults()` → `BillingAddress_UIpgObj` + `Address_POJO`
+       - Click Billing Continue
+    2. Shipping Address
+       - `ShippingAddress_UIpgObj.fillShippingAddressDefaults()` → `Address_POJO`
+       - Click Shipping Address Continue
+    3. Shipping Method
+       - `selectShippingMethod()` (Ground)
+       - Click Shipping Method Continue
+    4. Payment Method
+       - Click Payment Method Continue
+    5. Payment Info
+       - Click Payment Info Continue
+    6. Confirm Order
+       - Click Confirm Order
+       - `isOrderCompleted()` checks confirmation section.
+
+---
+
+## 4. Address model (Address_POJO)
+
+`Address_POJO` is a simple data container used by both Billing and Shipping page objects:
+
+```java
+public class Address_POJO {
+    public String firstName;
+    public String lastName;
+    public String email;
+    public String company;
+    public String country;
+    public String state;
+    public String city;
+    public String address1;
+    public String zip;
+    public String phone;
+}
+
+
+
+[Test] EndToEndTests_UI.loginAddItemCheckout
+    |
+    v
+[User Flow] Checkout_UserFlow
+    |
+    |-- nav.goToBooks()
+    |       (NavigationBar_UIpgObj)
+    |
+    |-- listing.addFirstProductToCart()
+    |       (ProductListing_UIpgObj)
+    |
+    |-- nav.goToCart()
+    |       (NavigationBar_UIpgObj)
+    |
+    |-- cart.proceedToCheckout()
+    |       (Cart_UIpgObj)
+    |
+    |-- checkout.completeCheckoutWithDefaults()
+            (Checkout_UIpgObj)
+            |
+            |-- fillBillingAddressDefaults()
+            |       |
+            |       |-- new BillingAddress_UIpgObj(page)
+            |       |-- new Address_POJO(...)
+            |       |-- billing.fillAddress(Address_POJO)
+            |
+            |-- click BILLING_CONTINUE
+            |
+            |-- new ShippingAddress_UIpgObj(page)
+            |-- shipping.fillShippingAddressDefaults()
+            |       |
+            |       |-- selectNewAddress()
+            |       |-- new Address_POJO(...)
+            |       |-- shipping.fillAddress(Address_POJO)
+            |
+            |-- click SHIPPING_CONTINUE
+            |
+            |-- selectShippingMethod()
+            |       (Ground radio)
+            |
+            |-- click SHIPPING_METHOD_CONTINUE
+            |
+            |-- click PAYMENT_METHOD_CONTINUE
+            |
+            |-- click PAYMENT_INFO_CONTINUE
+            |
+            |-- click CONFIRM_ORDER_BUTTON
+            |
+            |-- isOrderCompleted()
+                    (ORDER_CONFIRMATION visible)

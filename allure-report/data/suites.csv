@@ -1,0 +1,6 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","2677","Logout","demoWebShop_UI_Suite","2026-02-17","passed","2026-02-17","com.demoWebShop.Tests.UI.FunctionalTests_UI","All Tests","com.demoWebShop.Tests.UI.FunctionalTests_UI","logout"
+"","1627","Register a new user","demoWebShop_UI_Suite","2026-02-17","passed","2026-02-17","com.demoWebShop.Tests.UI.FunctionalTests_UI","All Tests","com.demoWebShop.Tests.UI.FunctionalTests_UI","registerNewUser"
+"","32124","Login with valid credentials","demoWebShop_UI_Suite","2026-02-17","broken","2026-02-17","com.demoWebShop.Tests.UI.FunctionalTests_UI","All Tests","com.demoWebShop.Tests.UI.FunctionalTests_UI","loginWithValidCredentials"
+"","2143","Update customer info","demoWebShop_UI_Suite","2026-02-17","broken","2026-02-17","com.demoWebShop.Tests.UI.FunctionalTests_UI","All Tests","com.demoWebShop.Tests.UI.FunctionalTests_UI","updateCustomerInfo"
+"","848","Login with invalid credentials","demoWebShop_UI_Suite","2026-02-17","passed","2026-02-17","com.demoWebShop.Tests.UI.FunctionalTests_UI","All Tests","com.demoWebShop.Tests.UI.FunctionalTests_UI","loginWithInvalidCredentials"

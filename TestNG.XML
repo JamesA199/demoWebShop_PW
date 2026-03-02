@@ -1,0 +1,24 @@
+<suite name="demoWebShop_UI_Suite" verbose="1" parallel="false">
+
+    <listeners>
+        <listener class-name="com.demoWebShop.Listeners.TestListener"/>
+    </listeners>
+
+    <test name="All Tests">
+        <groups>
+            <run>
+                <!-- Uncomment to run only specific groups -->
+                <!-- <include name="smoke"/> -->
+                <!-- <include name="functional"/> -->
+                <!-- <include name="e2e"/> -->
+            </run>
+        </groups>
+
+        <classes>
+           <!--  <class name="com.demoWebShop.Tests.UI.SmokeTests_UI"/>-->
+        <!--    <class name="com.demoWebShop.Tests.UI.FunctionalTests_UI"/>-->
+               <class name="com.demoWebShop.Tests.UI.EndToEndUI_Tests"/> 
+            <!-- <class name="com.demoWebShop.Tests.UI.EndToEndUI_Tests_DD"/>-->
+        </classes>
+    </test>
+</suite>

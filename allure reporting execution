@@ -1,0 +1,59 @@
+allure serve target/allure-results
+What this command does:
+Builds the HTML report
+Starts a temporary local server
+Automatically opens your browser
+Displays the full Allure dashboard
+You’ll see:
+	Test list
+	Steps
+	Attachments
+	Screenshots
+	Videos
+	Logs
+	Categories
+	Suites
+	Timeline
+
+full interactive UI.
+
+setup .bat command file in the project root(where pom.xml located)
+add these commands in notepad and save file as a .bat file:
+@echo off
+echo Generating Allure report...
+allure serve target/allure-results
+pause
+
+
+
+run allure report via server(not recommended)
+generate a static HTML report only used via server. running this on local machine and java scripts will be blocked and no data is produced. 
+allure generate target/allure-results --clean -o allure-report
+
+then open index.html from your project folder...
+allure-report/index.html
+
+run on a server using commands (power shell):
+
+cd allure-report
+python -m http.server 8080
+
+open using:
+http://localhost:8080
+
+
+Allure’s HTML uses JavaScript to load:
+*.json
+*.txt
+*.png
+*.webm
+
+Browsers block this when opened from file:///.
+So the UI loads, but the data never loads → “Loading…”
+
+
+
+
+
+
+
